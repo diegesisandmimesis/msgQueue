@@ -62,9 +62,10 @@ aliceRoom:	Room 'A Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		msgQueue('Alice mutters <q>foo</q>.',
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Alice mutters <q>foo</q>.',
 			'On the wind you hear someone mutter <q>foo</q>.',
-			getActor(), nil, 100);
+			100, getActor(), sound));
 	}
 ;
 
@@ -80,9 +81,10 @@ bobRoom:	Room 'Another Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		msgQueue('Bob says <q>bar</q>.',
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Bob says <q>bar</q>.',
 			'Off in the distance you hear someone say <q>bar</q>.',
-			getActor, nil, 75);
+			75, getActor, sound));
 	}
 ;
 
@@ -99,9 +101,10 @@ carolRoom:	Room 'One More Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		msgQueue('Carol casually mentions <q>baz</q>.',
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Carol casually mentions <q>baz</q>.',
 			'You hear someone nearby mentioning <q>baz</q>.',
-			getActor(), nil, 50);
+			50, getActor(), sound));
 	}
 ;
 

@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// fidgetTest.t
+// sample.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f fidgetTest.t3m
+//	# t3make -f makefile.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -61,8 +61,12 @@ aliceRoom:	Room 'A Different Void'
 ++ aliceAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetBefore('Alice fidgets.'); }
-	//invokeItem() { fidgetBefore('Alice fidgets.', 1); }
+	invokeItem() {
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Alice fidgets.',
+			'In the distance you hear Alice fidget.',
+			100, getActor(), sound));
+	}
 ;
 
 bobRoom:	Room 'Another Different Void'
@@ -76,7 +80,12 @@ bobRoom:	Room 'Another Different Void'
 ++ bobAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { defaultFidget('Bob fidgets.'); }
+	invokeItem() {
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Bob fidgets.',
+			'In the distance you hear Bob fidget.',
+			50, getActor, sound));
+	}
 ;
 
 carolRoom:	Room 'One More Different Void'
@@ -91,13 +100,12 @@ carolRoom:	Room 'One More Different Void'
 ++ carolAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetAfter('Carold fidgets.'); }
-	//invokeItem() { fidgetAfter('Carold fidgets.', 100); }
-;
-
-gameMain: GameMainDef
-	initialPlayerChar = me
-	newGame() {
-		runGame(true);
+	invokeItem() {
+		queueMsg(new MsgQueueMsgSenseDual(
+			'Carol fidgets.',
+			'In the distance you hear Carol fidget.',
+			1, getActor(), sound));
 	}
 ;
+
+gameMain: GameMainDef initialPlayerChar = me;

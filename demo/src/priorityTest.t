@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// sample.t
+// priorityTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f makefile.t3m
+//	# t3make -f priorityTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -61,7 +61,7 @@ aliceRoom:	Room 'A Different Void'
 ++ aliceAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetBefore('Alice fidgets.'); }
+	invokeItem() { fidgetBefore('Alice fidgets.', 1); }
 ;
 
 bobRoom:	Room 'Another Different Void'
@@ -90,7 +90,7 @@ carolRoom:	Room 'One More Different Void'
 ++ carolAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetAfter('Carold fidgets.'); }
+	invokeItem() { fidgetAfter('Carold fidgets.', 100); }
 ;
 
 gameMain: GameMainDef

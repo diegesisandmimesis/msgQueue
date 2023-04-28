@@ -111,6 +111,6 @@ carolRoom:	Room 'One More Different Void'
 gameMain: GameMainDef
 	initialPlayerChar = me
 	newGame() {
-		
+		runGame(true);
 	}
 ;

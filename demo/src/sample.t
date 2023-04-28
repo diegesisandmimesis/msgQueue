@@ -28,8 +28,9 @@ versionInfo:    GameID
         version = '1.0'
         IFID = '12345'
 	showAbout() {
-		"This is a simple test game that demonstrates the features
-		of the msgQueue library.
+		"Simple demo of msgQueue.  Each of the three NPCs fidgets
+		each turn, the fidgets are visible everywhere, and they
+		should always occur in the order:  Alice, Bob, Carol.
 		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
@@ -93,9 +94,4 @@ carolRoom:	Room 'One More Different Void'
 	invokeItem() { fidgetAfter('Carold fidgets.'); }
 ;
 
-gameMain: GameMainDef
-	initialPlayerChar = me
-	newGame() {
-		runGame(true);
-	}
-;
+gameMain: GameMainDef initialPlayerChar = me;

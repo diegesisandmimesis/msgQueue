@@ -28,8 +28,8 @@ versionInfo:    GameID
         version = '1.0'
         IFID = '12345'
 	showAbout() {
-		"This is a simple test game that demonstrates the features
-		of the msgQueue library.
+		"Identical to the demo in sample.t, but with explicit message
+		priorities given.  Order should be Carol, Bob, Alice.
 		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
@@ -61,7 +61,7 @@ aliceRoom:	Room 'A Different Void'
 ++ aliceAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetBefore('Alice fidgets.', 1); }
+	invokeItem() { fidget('Alice fidgets.', 1); }
 ;
 
 bobRoom:	Room 'Another Different Void'
@@ -75,7 +75,7 @@ bobRoom:	Room 'Another Different Void'
 ++ bobAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { defaultFidget('Bob fidgets.'); }
+	invokeItem() { fidget('Bob fidgets.', 50); }
 ;
 
 carolRoom:	Room 'One More Different Void'
@@ -90,12 +90,7 @@ carolRoom:	Room 'One More Different Void'
 ++ carolAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidgetAfter('Carold fidgets.', 100); }
+	invokeItem() { fidget('Carold fidgets.', 100); }
 ;
 
-gameMain: GameMainDef
-	initialPlayerChar = me
-	newGame() {
-		runGame(true);
-	}
-;
+gameMain: GameMainDef initialPlayerChar = me;

@@ -18,7 +18,12 @@
 	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg, \
 		args#ifempty#1# args#ifnempty#args#)))
 
+#define fidget(msg, args...) \
+	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg args#ifnempty#, args#)))
 
+#define fidgetDualSense(msg0, msg1, pri, args...) \
+	(msgQueueDaemon.addMsg(new MsgQueueMsgSenseDual(msg0, msg1, pri, args)))
+	
 // For dependency checking, don't comment out.
 #ifndef MSG_QUEUE_H
 #define MSG_QUEUE_H

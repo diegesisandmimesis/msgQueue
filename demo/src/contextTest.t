@@ -62,10 +62,8 @@ aliceRoom:	Room 'A Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		queueMsg(new MsgQueueMsgSenseDual(
-			'Alice fidgets.',
-			'In the distance you hear Alice fidget.',
-			100, getActor(), sound));
+		fidgetDualSense('Alice fidgets.', 'In the distance Alice
+			fidgets silently.', 100, getActor());
 	}
 ;
 
@@ -101,10 +99,8 @@ carolRoom:	Room 'One More Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		queueMsg(new MsgQueueMsgSenseDual(
-			'Carol fidgets.',
-			'In the distance you hear Carol fidget.',
-			1, getActor(), sound));
+		fidgetDualSense('Carol fidgets.', 'In the distance you hear
+			Carol fidget.', 1, getActor(), sound);
 	}
 ;
 

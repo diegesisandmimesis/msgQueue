@@ -73,7 +73,7 @@ class MsgQueueMsgSenseDual: MsgQueueMsgSense
 		s = (sense ? sense : sight);
 
 		if(gPlayerChar.senseObj(s, src).trans != opaque) {
-			callWithSenseContext(src, sense, {: "<<msg>> " });
+			callWithSenseContext(src, s, {: "<<msg>> " });
 			return;
 		}
 

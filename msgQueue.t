@@ -5,6 +5,14 @@
 //	A TADS3 module that implements a simple message queue with
 //	explicit message priorities.
 //
+//	This is intended to work somewhat like the command report system
+//	in adv3, only not related to action processing.  This is to make it
+//	easier to re-write and consolodate messages involving things like
+//	NPC fidgets/barks and environmental effects.  This sort of thing
+//	could theoretically be done via output filtering, but this message
+//	queue system makes it easier to filter by message type, message
+//	source, and so on.
+//
 #include <adv3.h>
 #include <en_us.h>
 

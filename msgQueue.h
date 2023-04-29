@@ -9,18 +9,23 @@
 #define addMsgQueueFilter msgQueueDaemon.addFilter
 
 #define fidget(msg, args...) \
-	return(msgQueueDaemon.addMsg( \
-		new MsgQueueMsg(msg args#ifnempty#, args#)))
+	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg, args)))
 
-#define fidgetSense(msg, pri, args...) \
-	return(msgQueueDaemon.addMsg(new MsgQueueMsgSense(msg, pri, args)))
+#define fidgetSense(msg, args...) \
+	(msgQueueDaemon.addMsg(new MsgQueueMsgSense(msg, args)))
 
-#define fidgetDualSense(msg0, msg1, pri, args...) \
-	return(msgQueueDaemon.addMsg( \
-		new MsgQueueMsgSenseDual(msg0, msg1, pri, args)))
+#define fidgetDualSense(msg0, msg1, args...) \
+	(msgQueueDaemon.addMsg( \
+		new MsgQueueMsgSenseDual(msg0, msg1, args)))
 
 #define povFidget(msg, args...) \
-	return(msgQueueDaemon.addMsg(new MsgQueueMsgSensePOV(msg, args)))
+	(msgQueueDaemon.addMsg(new MsgQueueMsgSensePOV(msg, args)))
+
+#define filterMessages(cb) \
+	(msgQueueDaemon.traverseMessages(cb))
+
+#define removeMessage(obj) \
+	(msgQueueDaemon.removeMessage(obj))
 	
 // For dependency checking, don't comment out.
 #ifndef MSG_QUEUE_H

@@ -113,6 +113,17 @@ class MsgQueueDaemon: object
 	runFilters() {
 		_filters.forEach(function(o) { o.filter(); });
 	}
+
+	traverseMessages(cb) {
+		if(cb == nil) return;
+		_queue.forEach(function(o) { (cb)(o); });
+		_fifo.forEach(function(o) { (cb)(o); });
+	}
+
+	removeMessage(obj) {
+		_queue.removeElement(obj);
+		_fifo.removeElement(obj);
+	}
 ;
 
 // Default global message queue daemon.

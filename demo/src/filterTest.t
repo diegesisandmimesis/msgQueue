@@ -81,10 +81,14 @@ bobRoom:	Room 'Another Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
+		fidget('Non-Bob fidget 1.');
+
 		queueMsg(new MsgQueueMsgSenseDual(
 			'Bob says <q>bar</q>.',
 			'Off in the distance you hear someone say <q>bar</q>.',
 			75, getActor, sound));
+
+		fidget('Non-Bob fidget 2.');
 	}
 ;
 
@@ -108,9 +112,21 @@ carolRoom:	Room 'One More Different Void'
 	}
 ;
 
+// A filter that will remove any fidgets made by Bob.  For some reason.
+bobFilter: MsgQueueFilter
+	filter() {
+		filterMessages(function(obj) {
+			if(obj.src != bob) return;
+			removeMessage(obj);
+		});
+	}
+;
+
 gameMain: GameMainDef
 	initialPlayerChar = me
 	newGame() {
+		// Register the Bob filter.
+		msgQueueDaemon.addFilter(bobFilter);
 		runGame(true);
 	}
 ;

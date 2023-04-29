@@ -8,21 +8,19 @@
 #define queueMsg msgQueueDaemon.addMsg
 #define addMsgQueueFilter msgQueueDaemon.addFilter
 
-#define defaultFidget(msg, args...) \
-	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg, \
-		args#ifempty#50# args#ifnempty#args#)))
-#define fidgetBefore(msg, args...) \
-	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg, \
-		args#ifempty#100# args#ifnempty#args#)))
-#define fidgetAfter(msg, args...) \
-	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg, \
-		args#ifempty#1# args#ifnempty#args#)))
-
 #define fidget(msg, args...) \
-	(msgQueueDaemon.addMsg(new MsgQueueMsg(msg args#ifnempty#, args#)))
+	return(msgQueueDaemon.addMsg( \
+		new MsgQueueMsg(msg args#ifnempty#, args#)))
+
+#define fidgetSense(msg, pri, args...) \
+	return(msgQueueDaemon.addMsg(new MsgQueueMsgSense(msg, pri, args)))
 
 #define fidgetDualSense(msg0, msg1, pri, args...) \
-	(msgQueueDaemon.addMsg(new MsgQueueMsgSenseDual(msg0, msg1, pri, args)))
+	return(msgQueueDaemon.addMsg( \
+		new MsgQueueMsgSenseDual(msg0, msg1, pri, args)))
+
+#define povFidget(msg, args...) \
+	return(msgQueueDaemon.addMsg(new MsgQueueMsgSensePOV(msg, args)))
 	
 // For dependency checking, don't comment out.
 #ifndef MSG_QUEUE_H

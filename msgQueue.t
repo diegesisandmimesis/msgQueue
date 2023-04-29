@@ -72,7 +72,7 @@ class MsgQueueDaemon: object
 		else
 			_queue.append(m);
 		
-		return(true);
+		return(m);
 	}
 
 	// Output a single message.

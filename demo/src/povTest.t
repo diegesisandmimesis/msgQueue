@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// sample.t
+// povTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f makefile.t3m
+//	# t3make -f povTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -28,10 +28,8 @@ versionInfo:    GameID
         version = '1.0'
         IFID = '12345'
 	showAbout() {
-		"Simple demo of msgQueue.  Each of the three NPCs fidgets
-		each turn, the fidgets are visible everywhere.  The
-		order is more or less arbitrary:  they'll be output
-		in whatever order the NPC agendas are evaluated.
+		"This is a simple test game that demonstrates the features
+		of the msgQueue library.
 		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
@@ -43,19 +41,10 @@ versionInfo:    GameID
 ;
 
 startRoom:      Room 'Void'
-        "This is a featureless void.  Alice's room is to the north,
-		Bob's is to the south, and Carol's is to the east."
-	north = aliceRoom
-	south = bobRoom
-	east = carolRoom
+        "This is a featureless void. "
 ;
-+ me:     Person;
-
-aliceRoom:	Room 'A Different Void'
-	"This is also a featureless void, but a different one."
-	south = startRoom
-;
-+ alice:	Person 'alice' 'Alice'
++ me: Person;
++ alice: Person 'alice' 'Alice'
 	"She looks like the first person you'd turn to in a problem."
 	isHer = true
 	isProperName = true
@@ -63,12 +52,7 @@ aliceRoom:	Room 'A Different Void'
 ++ aliceAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidget('Alice fidgets.'); }
-;
-
-bobRoom:	Room 'Another Different Void'
-	"This is also a featureless void, but a southern one."
-	north = startRoom
+	invokeItem() { selfFidget('{You/he msgSrc} fidget{s msgSrc}.'); }
 ;
 + bob:	Person 'bob' 'Bob'
 	"He looks like a Robert, only shorter. "
@@ -77,22 +61,6 @@ bobRoom:	Room 'Another Different Void'
 ++ bobAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidget('Bob fidgets.'); }
+	invokeItem() { selfFidget('{You/he msgSrc} fidget{s msgSrc}.'); }
 ;
-
-carolRoom:	Room 'One More Different Void'
-	"This is also a featureless void, but an eastern one."
-	west = startRoom
-;
-+ carol:	Person 'carol' 'Carol'
-	"A nice person, but kinda a third wheel. "
-	isHer = true
-	isProperName = true
-;
-++ carolAgenda: AgendaItem
-	initiallyActive = true
-	isReady = true
-	invokeItem() { fidget('Carol fidgets.'); }
-;
-
 gameMain: GameMainDef initialPlayerChar = me;

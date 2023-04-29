@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// sample.t
+// senseTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f makefile.t3m
+//	# t3make -f senseTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -28,10 +28,8 @@ versionInfo:    GameID
         version = '1.0'
         IFID = '12345'
 	showAbout() {
-		"Simple demo of msgQueue.  Each of the three NPCs fidgets
-		each turn, the fidgets are visible everywhere.  The
-		order is more or less arbitrary:  they'll be output
-		in whatever order the NPC agendas are evaluated.
+		"This is a simple test game that demonstrates the features
+		of the msgQueue library.
 		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
@@ -63,7 +61,9 @@ aliceRoom:	Room 'A Different Void'
 ++ aliceAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidget('Alice fidgets.'); }
+	invokeItem() {
+		fidgetSense('Alice fidgets.', 100, getActor());
+	}
 ;
 
 bobRoom:	Room 'Another Different Void'
@@ -77,7 +77,9 @@ bobRoom:	Room 'Another Different Void'
 ++ bobAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidget('Bob fidgets.'); }
+	invokeItem() {
+		fidgetSense('Bob fidgets.', 50, getActor(), sound);
+	}
 ;
 
 carolRoom:	Room 'One More Different Void'
@@ -92,7 +94,9 @@ carolRoom:	Room 'One More Different Void'
 ++ carolAgenda: AgendaItem
 	initiallyActive = true
 	isReady = true
-	invokeItem() { fidget('Carol fidgets.'); }
+	invokeItem() {
+		fidgetSense('Carol fidgets.', 1, getActor(), sound);
+	}
 ;
 
 gameMain: GameMainDef initialPlayerChar = me;

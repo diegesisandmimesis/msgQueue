@@ -12,6 +12,7 @@ class MsgQueueMsg: object
 	msg = nil		// Text literal of message
 	priority = nil		// Message priority
 	_tags = nil		// Message tags
+	_active = true		// Should message be output?
 
 	// Allow both properties to be set by the constructor
 	construct(v, pri?) {
@@ -20,7 +21,7 @@ class MsgQueueMsg: object
 	}
 
 	// Just print the message.
-	output() { "<<msg>> "; }
+	output() { if(isActive()) "<<msg>> "; }
 
 	// Add a tag (a text literal) to this message.  Used for sorting
 	// and filtering.
@@ -35,6 +36,16 @@ class MsgQueueMsg: object
 		if(_tags == nil) return(nil);
 		return(_tags.indexOf(v) != nil);
 	}
+
+	// Methods for marking and checking the message's status.
+	// We do this (instead of actually removing messages from the
+	// queue) to avoid having to shuffle the queue, possibly multiple
+	// times, when filtering.  All messages get flushed at the end
+	// of every turn anyway, so there's we don't have to fret over
+	// housekeeping too much.
+	activate() { _active = true; }
+	deactivate() { _active = nil; }
+	isActive() { return(_active == true); }
 ;
 
 // Class for messages that are only displayed when the source is
@@ -58,6 +69,10 @@ class MsgQueueMsgSense: MsgQueueMsg
 	}
 
 	output() {
+		// Only output if we're marked "active".
+		if(!isActive())
+			return;
+
 		// If we don't have a source, bail.
 		if(src == nil)
 			return;
@@ -81,6 +96,10 @@ class MsgQueueMsgSenseDual: MsgQueueMsgSense
 	}
 
 	output() {
+		// Only output if we're marked "active".
+		if(!isActive())
+			return;
+
 		// We're the same as MsgQueueMsgSense.output() until the end.
 		if(src == nil)
 			return;
@@ -110,6 +129,10 @@ class MsgQueueMsgSensePOV: MsgQueueMsgSense
 	}
 
 	output() {
+		// Only output if we're marked "active".
+		if(!isActive())
+			return;
+
 		// If we don't have a source, bail.
 		if(src == nil)
 			return;

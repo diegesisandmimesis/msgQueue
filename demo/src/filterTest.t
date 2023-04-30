@@ -62,10 +62,9 @@ aliceRoom:	Room 'A Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		queueMsg(new MsgQueueMsgSenseDual(
-			'Alice mutters <q>foo</q>.',
+		fidgetDualSense('Alice mutters <q>foo</q>.',
 			'On the wind you hear someone mutter <q>foo</q>.',
-			100, getActor(), sound));
+			100, getActor(), sound);
 	}
 ;
 
@@ -81,14 +80,21 @@ bobRoom:	Room 'Another Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		fidget('Non-Bob fidget 1.');
+		// Sandwich the "Bob" fidget between a couple "anonymous"
+		// fidgets.  This is just to verify that the filtering
+		// process doesn't drop/shuffle/whatever messages that
+		// don't match the filter.
+		fidget('Non-Bob fidget 1.', 76);
 
-		queueMsg(new MsgQueueMsgSenseDual(
-			'Bob says <q>bar</q>.',
+		fidgetDualSense('Bob says <q>bar</q>.',
 			'Off in the distance you hear someone say <q>bar</q>.',
-			75, getActor, sound));
+			75, getActor(), sound);
+		fidgetDualSense('Bob says <q>bar</q> again.',
+			'Off in the distance you hear someone say <q>bar</q>
+				again.',
+			74, getActor(), sound);
 
-		fidget('Non-Bob fidget 2.');
+		fidget('Non-Bob fidget 2.', 74);
 	}
 ;
 
@@ -105,10 +111,9 @@ carolRoom:	Room 'One More Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		queueMsg(new MsgQueueMsgSenseDual(
-			'Carol casually mentions <q>baz</q>.',
+		fidgetDualSense('Carol casually mentions <q>baz</q>.',
 			'You hear someone nearby mentioning <q>baz</q>.',
-			50, getActor(), sound));
+			50, getActor(), sound);
 	}
 ;
 
@@ -117,7 +122,7 @@ bobFilter: MsgQueueFilter
 	filter() {
 		filterMessages(function(obj) {
 			if(obj.src != bob) return;
-			removeMessage(obj);
+			obj.deactivate();
 		});
 	}
 ;

@@ -120,10 +120,13 @@ class MsgQueueDaemon: object
 		_fifo.forEach(function(o) { (cb)(o); });
 	}
 
-	removeMessage(obj) {
-		_queue.removeElement(obj);
-		_fifo.removeElement(obj);
-	}
+	// Instead of removing the message from the queue, just mark it
+	// inactive.
+	// This saves us having to shuffle the message vector during
+	// filtering, allows filters to potentially override each other
+	// (although *maybe* that's a misfeature), and the entire queue
+	// gets flushed every turn anyway.
+	removeMessage(obj) { obj.deactivate(); }
 ;
 
 // Default global message queue daemon.

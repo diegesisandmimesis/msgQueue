@@ -41,6 +41,8 @@ class MsgQueueDaemon: object
 	// Registered filters
 	_filters = perInstance(new Vector())
 
+	_simpleFilters = perInstance(new Vector())
+
 	// Initialize the daemon if it isn't already running.
 	initDaemon() {
 		if(_daemon != nil) return;
@@ -52,7 +54,10 @@ class MsgQueueDaemon: object
 		if((obj == nil) || !obj.ofKind(MsgQueueFilter))
 			return(nil);
 
-		_filters.append(obj);
+		if(obj.ofKind(MsgQueueFilterSimple))
+			_simpleFilters.append(obj);
+		else
+			_filters.append(obj);
 
 		return(true);
 	}
@@ -114,7 +119,22 @@ class MsgQueueDaemon: object
 	// list and calling filters on individual messages because we
 	// might have filters that want to act on the entire queue.  E.g.,
 	// combining messages.
-	runFilters() { _filters.forEach(function(o) { o.filter(); }); }
+	runFilters() {
+		// Handle the "regular" filters.
+		_filters.forEach(function(o) { o.filter(); });
+
+		// Handle the "simple" filters.
+		_queue.forEach(function(o) {
+			_simpleFilters.forEach(function(f) {
+				f.simpleFilter(o);
+			});
+		});
+		_fifo.forEach(function(o) {
+			_simpleFilters.forEach(function(f) {
+				f.simpleFilter(o);
+			});
+		});
+	}
 
 	// Go through all messages, calling the passed callback for each
 	// one.
@@ -160,6 +180,58 @@ class MsgQueueDaemon: object
 	// (although *maybe* that's a misfeature), and the entire queue
 	// gets flushed every turn anyway.
 	removeMessage(obj) { obj.deactivate(); }
+
+	_checkSenseContext(msg) {
+		if((msg == nil) || (msg.sense == nil)) return(-1);
+		return(msg.checkSenseContext());
+	}
+
+	// Summarize messages, maybe.  Indended to be kinda-sorta like
+	// CommandTranscript.summarizeAction().
+	// Args are both functions.  Usage is:
+	//	cond	is called with a message as the argument, and
+	//		the message is included in the summary list
+	//		if cond() returns boolean true.
+	//	report	is called with the summary list as the first
+	//		argument and a boolean indicating whether all
+	//		the messages are "in" the player's sense context
+	//		or out of it
+	summarizeMessages(cond, report) {
+		local ctx, i, r;
+
+		// Get a list of all the messages for which the first
+		// callback returns boolean true.
+		r = searchMessages(cond);
+
+		// If we have less than two messages, nothing to summarize.
+		if(r.length < 2)
+			return(nil);
+
+		// Get the sense context flag of the first message.  This
+		// will be nil (player not in the same sense context as
+		// the source of the message), true (player is in the same
+		// sense context as the source of the message), or -1 (the
+		// message doesn't check sense context).
+		ctx = _checkSenseContext(r[1]);
+
+		// Now make sure all the other messages in our list
+		// have the same flag.
+		for(i = 2; i <= r.length; i++) {
+			if(r[i].checkSenseContext() != ctx)
+				return(nil);
+		}
+
+		// If we made it this far, we're going to combine the messages
+		// so we go through our list and deactivate the original
+		// messages.
+		r.forEach(function(o) { o.deactivate(); });
+
+		// Now call the report callback with the list of matching
+		// messages and the context flag.
+		report(r, ctx);
+
+		return(true);
+	}
 ;
 
 // Default global message queue daemon.

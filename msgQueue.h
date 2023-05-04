@@ -32,6 +32,9 @@
 
 #define removeMessage(obj) \
 	(msgQueueDaemon.removeMessage(obj))
+
+#define summarizeMessages(cond, report) \
+	(msgQueueDaemon.summarizeMessages(cond, report))
 	
 // For dependency checking, don't comment out.
 #ifndef MSG_QUEUE_H

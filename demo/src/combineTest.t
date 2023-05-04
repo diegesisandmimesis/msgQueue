@@ -143,6 +143,7 @@ carolRoom: Room 'One More Different Void'
 	}
 ;
 
+/*
 // A filter that will remove any fidgets made by Bob.  For some reason.
 bobFilter: MsgQueueFilter
 	filter() {
@@ -152,6 +153,13 @@ bobFilter: MsgQueueFilter
 		});
 	}
 ;
+*/
+
+bobFilter: MsgQueueFilterSimple
+	simpleFilter(obj) {
+		if(obj.src == bob) obj.deactivate();
+	}
+;
 
 // A filter that combines Alice and Carol's messages when possible.
 // Alice and Carol fidget every turn, but Alice's messages are only
@@ -159,63 +167,23 @@ bobFilter: MsgQueueFilter
 // so the filter only applies every 6th turn.
 aliceCarolFilter: MsgQueueFilter
 	filter() {
-		local ctx, i, r, v;
-
-		// Get all of the combinable messages as an array.
-		// The combine flag is just a one-off property we
-		// use to differentiate between types of messages.
-		r = searchMessages(function(obj) {
+		summarizeMessages(function(obj) {
 			return(obj.ofKind(AliceCarolFidget)
 				&& (obj.combine == true));
+		}, function(v, ctx) {
+			local l;
+
+			l = new Vector(v.length);
+			v.forEach(function(o) {
+				l.append(o.src.theName);
+			});
+			if(ctx)
+				fidget('<<stringLister.makeSimpleList(l)>>
+					fidget in context.');
+			else
+				fidget('<<stringLister.makeSimpleList(l)>>
+					fidget out of context.');
 		});
-
-		// If we don't have at least two messages, we can't
-		// combine anything:  bail.
-		if(r.length < 2)
-			return;
-
-		// Now we make sure all the messages are EITHER all
-		// "in" the same sense context as the player, or all of
-		// are "out" of the player's sense context.  In our demo
-		// we'll only pass this check when the player is not in
-		// the same room with either Alice or Carol, meaning they're
-		// both outputting "out of context" messages.
-		// This is just so we don't combine "Alice fidgets" and
-		// "Carol fidgets in the distance" and so on.
-		// We start out by arbitrarily remembering the first sense
-		// context flag and then verify that every other messages
-		// in our list matches it, immediately returning if any
-		// don't match.
-		ctx = r[1].checkSenseContext();
-		for(i = 2; i <= r.length; i++)
-			if(r[i].checkSenseContext() != ctx)
-				return;
-		
-		// Now we make a list of the names of the actors whose
-		// messages we're combining this turn.
-		// While we're traversing our list of matches anyway, we
-		// deactivate each message, because if we've made it
-		// this far we're going to combine them into a single
-		// message.
-		v = new Vector(r.length);
-		r.forEach(function(o) {
-			v.append(o.src.theName);
-			o.deactivate();
-		});
-
-		// And finally we queue a new message combining all the
-		// actor names.
-		// In our demo we'll only ever use the second case (because
-		// Alice and Carol are in different rooms, so if the player
-		// is in context for one they're out of context for the 
-		// other, so we'll never combine those messages.
-		if(ctx)
-			fidget('<<stringLister.makeSimpleList(v)>> fidget
-				in context.');
-		else
-			fidget('<<stringLister.makeSimpleList(v)>> fidget
-				out of context.');
-
 	}
 ;
 

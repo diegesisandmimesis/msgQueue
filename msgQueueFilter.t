@@ -13,3 +13,10 @@ class MsgQueueFilter: object
 	// The argument is the calling message queue.
 	filter(q?) {}
 ;
+
+// Class for filters that ONLY check single messages.  Instead of
+// having their filter() method called, the simpleFilter() method will
+// be called with each message in the queue.
+class MsgQueueFilterSimple: MsgQueueFilter
+	simpleFilter(obj) {}
+;

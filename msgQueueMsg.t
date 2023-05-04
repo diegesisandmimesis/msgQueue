@@ -54,6 +54,9 @@ class MsgQueueMsgSense: MsgQueueMsg
 	src = nil		// Source of the message
 	sense = nil		// Sense to use to check context
 
+	_senseCheck = -1	// Used to cache sense check result
+	_senseCheckActor = nil	// Actor used for sense check
+
 	construct(v, pri, a, s?) {
 		inherited(v, pri);
 		src = ((a != nil) ? a : nil);
@@ -63,9 +66,17 @@ class MsgQueueMsgSense: MsgQueueMsg
 	// Returns boolean true if the given actor is in the same
 	// sense context as the message source, nil otherwise.
 	// If no actor is specified, uses gPlayerChar.
+	// We cache the result because filters might want to do multiple
+	// sense checks and since messages are ephemeral (we go away at
+	// the end of the turn one way or another) the results of the
+	// check shouldn't vary unless something very weird is going on.
 	checkSenseContext(actor?) {
-		return((actor ? actor : gPlayerChar)
-			.senseObj(sense, src).trans != opaque);
+		actor = (actor ? actor : gPlayerChar);
+		if((_senseCheck != -1) && (_senseCheckActor == actor))
+			return(_senseCheck);
+		_senseCheckActor = actor;
+		return(_senseCheck =
+			(actor.senseObj(sense, src).trans != opaque));
 	}
 
 	output() {
@@ -104,8 +115,10 @@ class MsgQueueMsgSenseDual: MsgQueueMsgSense
 		if(src == nil)
 			return;
 
-		if(checkSenseContext())
+		if(checkSenseContext()) {
 			callWithSenseContext(src, sense, {: "<<msg>> " });
+			return;
+		}
 
 		// If we've reached this point, the message source isn't
 		// in the same sense context as the player.  So if we don't
@@ -118,15 +131,21 @@ class MsgQueueMsgSenseDual: MsgQueueMsgSense
 	}
 ;
 
-class MsgQueueMsgSensePOV: MsgQueueMsgSense
-	msgParamSub() {
+class MsgQueuePOV: object
+	msgParamSub(m?) {
 		local msgSrc;
+
+		if(m == nil)
+			m = msg;
 
 		if((msgSrc = src) != nil)
 			gMessageParams(msgSrc);
 
-		return(msg);
+		return(m);
 	}
+;
+
+class MsgQueueMsgSensePOV: MsgQueueMsgSense, MsgQueuePOV
 
 	output() {
 		// Only output if we're marked "active".
@@ -142,5 +161,31 @@ class MsgQueueMsgSensePOV: MsgQueueMsgSense
 		if(checkSenseContext())
 			callWithSenseContext(src, sense,
 				{: "<<msgParamSub>> " });
+	}
+;
+
+class MsgQueueMsgSenseDualPOV: MsgQueueMsgSenseDual, MsgQueuePOV
+	output() {
+		if(!isActive())
+			return;
+
+		if(src == nil)
+			return;
+
+		if(checkSenseContext()) {
+			callWithSenseContext(src, sense,
+				{: "<<msgParamSub>> " });
+			return;
+		}
+
+		// If we've reached this point, the message source isn't
+		// in the same sense context as the player.  So if we don't
+		// have an out-of-context message, bail.
+		if(msgOutOfContext == nil)
+			return;
+
+		// Just output the message.
+		callWithSenseContext(nil, nil,
+			{: "<<msgParamSub(msgOutOfContext)>> " });
 	}
 ;

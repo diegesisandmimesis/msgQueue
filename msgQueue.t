@@ -110,14 +110,47 @@ class MsgQueueDaemon: object
 	}
 
 	// Call all the registered filters.
-	runFilters() {
-		_filters.forEach(function(o) { o.filter(); });
-	}
+	// We do this instead of, for example, going through the message
+	// list and calling filters on individual messages because we
+	// might have filters that want to act on the entire queue.  E.g.,
+	// combining messages.
+	runFilters() { _filters.forEach(function(o) { o.filter(); }); }
 
+	// Go through all messages, calling the passed callback for each
+	// one.
 	traverseMessages(cb) {
 		if(cb == nil) return;
 		_queue.forEach(function(o) { (cb)(o); });
 		_fifo.forEach(function(o) { (cb)(o); });
+	}
+
+	// Go through all messages, returning a list of all the ones
+	// for which the passed callback returns boolean true.
+	searchMessages(cb) {
+		local r;
+
+		// Make sure we have a callback.
+		if(cb == nil)
+			return(nil);
+
+		// Results vector.  We use the queue length as a guesstimate
+		// of the results vector length.
+		r = new Vector(_queue.length);
+
+		// Check the queue.
+		_queue.forEach(function(o) {
+			if((cb)(o) == true)
+				r.append(o);
+		});
+
+		// Check the FIFO.
+		_fifo.forEach(function(o) {
+			if((cb)(o) == true)
+				r.append(o);
+		});
+
+		// Return the results.
+		return(r);
 	}
 
 	// Instead of removing the message from the queue, just mark it

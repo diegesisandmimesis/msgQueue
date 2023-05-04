@@ -21,8 +21,14 @@
 #define povFidget(msg, args...) \
 	(msgQueueDaemon.addMsg(new MsgQueueMsgSensePOV(msg, args)))
 
+#define povDualFidget(msg0, msg1, args...) \
+	(msgQueueDaemon.addMsg(new MsgQueueMsgSenseDualPOV(msg0, msg1, args)))
+
 #define filterMessages(cb) \
 	(msgQueueDaemon.traverseMessages(cb))
+
+#define searchMessages(cb) \
+	(msgQueueDaemon.searchMessages(cb))
 
 #define removeMessage(obj) \
 	(msgQueueDaemon.removeMessage(obj))

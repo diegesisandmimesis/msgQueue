@@ -9,5 +9,7 @@
 
 // Class for message queue filters.
 class MsgQueueFilter: object
-	filter() {}
+	// Stub method to be overwritten by actual filters.
+	// The argument is the calling message queue.
+	filter(q?) {}
 ;

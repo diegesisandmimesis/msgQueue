@@ -40,20 +40,20 @@ versionInfo:    GameID
 	}
 ;
 
-startRoom:      Room 'Void'
+startRoom: Room 'Void'
         "This is a featureless void.  Alice's room is to the north,
 		Bob's is to the south, and Carol's is to the east."
 	north = aliceRoom
 	south = bobRoom
 	east = carolRoom
 ;
-+ me:     Person;
++ me: Person;
 
-aliceRoom:	Room 'A Different Void'
+aliceRoom: Room 'A Different Void'
 	"This is also a featureless void, but a different one."
 	south = startRoom
 ;
-+ alice:	Person 'alice' 'Alice'
++ alice: Person 'alice' 'Alice'
 	"She looks like the first person you'd turn to in a problem."
 	isHer = true
 	isProperName = true
@@ -62,17 +62,16 @@ aliceRoom:	Room 'A Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		fidgetDualSense('Alice mutters <q>foo</q>.',
-			'On the wind you hear someone mutter <q>foo</q>.',
-			100, getActor(), sound);
+		selfDualFidget('Alice fidgets locally.',
+			'Alice fidgets in the distance.');
 	}
 ;
 
-bobRoom:	Room 'Another Different Void'
+bobRoom: Room 'Another Different Void'
 	"This is also a featureless void, but a southern one."
 	north = startRoom
 ;
-+ bob:	Person 'bob' 'Bob'
++ bob: Person 'bob' 'Bob'
 	"He looks like a Robert, only shorter. "
 	isProperName = true
 ;
@@ -86,23 +85,20 @@ bobRoom:	Room 'Another Different Void'
 		// don't match the filter.
 		fidget('Non-Bob fidget 1.', 76);
 
-		fidgetDualSense('Bob says <q>bar</q>.',
-			'Off in the distance you hear someone say <q>bar</q>.',
-			75, getActor(), sound);
-		fidgetDualSense('Bob says <q>bar</q> again.',
-			'Off in the distance you hear someone say <q>bar</q>
-				again.',
-			74, getActor(), sound);
+		selfDualFidget('Bob fidgets locally.',
+			'Bob fidgets in the distance.', 75);
+		selfDualFidget('Bob fidgets redudantly.',
+			'Bob distantly fidgets redundantly.', 74);
 
 		fidget('Non-Bob fidget 2.', 74);
 	}
 ;
 
-carolRoom:	Room 'One More Different Void'
+carolRoom: Room 'One More Different Void'
 	"This is also a featureless void, but an eastern one."
 	west = startRoom
 ;
-+ carol:	Person 'carol' 'Carol'
++ carol: Person 'carol' 'Carol'
 	"A nice person, but kinda a third wheel. "
 	isHer = true
 	isProperName = true
@@ -111,9 +107,8 @@ carolRoom:	Room 'One More Different Void'
 	initiallyActive = true
 	isReady = true
 	invokeItem() {
-		fidgetDualSense('Carol casually mentions <q>baz</q>.',
-			'You hear someone nearby mentioning <q>baz</q>.',
-			50, getActor(), sound);
+		selfDualFidget('Carol fidgets locally.',
+			'Carol fidgets in the distance.', 50);
 	}
 ;
 

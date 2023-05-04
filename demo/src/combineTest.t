@@ -143,18 +143,7 @@ carolRoom: Room 'One More Different Void'
 	}
 ;
 
-/*
 // A filter that will remove any fidgets made by Bob.  For some reason.
-bobFilter: MsgQueueFilter
-	filter() {
-		filterMessages(function(obj) {
-			if(obj.src != bob) return;
-			obj.deactivate();
-		});
-	}
-;
-*/
-
 bobFilter: MsgQueueFilterSimple
 	simpleFilter(obj) {
 		if(obj.src == bob) obj.deactivate();

@@ -237,3 +237,19 @@ class MsgQueueDaemon: object
 // Default global message queue daemon.
 // This is just an instance of our abstract message queue daemon class.
 msgQueueDaemon: MsgQueueDaemon;
+
+// Resolve a message text as if it was passed to a reporting macro, e.g.
+// defaultReport().
+//
+// 	local txt = resolveMsg(&mustBeVisibleMsg, pebble);
+//
+// ...will save to txt whatever would be output if you used
+//
+//	defaultReport(&mustBeVisibleMsg, pebble);
+//
+// instead.  This handles actor-specific action message objects, setting
+// the object and direct object for message parameter substitution, and so
+// on.
+resolveMsg(msg, [params]) {
+	return(new MessageResult(msg, params...).messageText_);
+}

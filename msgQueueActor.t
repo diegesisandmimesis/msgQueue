@@ -17,8 +17,6 @@ modify Actor
 		if(dualFidgetClass != nil) {
 			obj = dualFidgetClass.createInstance(msg0, msg1,
 				pri, self, s);
-			//obj = msgQueueDaemon.addMsg(obj);
-//aioSay('<<name>> in obj = <<toString(obj)>>\n ');
 			return(msgQueueDaemon.addMsg(obj));
 		}
 		return(povDualFidget(msg0, msg1, pri, self, s));

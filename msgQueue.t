@@ -236,7 +236,15 @@ class MsgQueueDaemon: object
 
 // Default global message queue daemon.
 // This is just an instance of our abstract message queue daemon class.
-msgQueueDaemon: MsgQueueDaemon;
+msgQueueDaemon: MsgQueueDaemon, InitObject
+	execute() {
+		forEachInstance(MsgQueueFilter, function(o) {
+			if(o.autoAdd != true)
+				return;
+			addFilter(o);
+		});
+	}
+;
 
 // Resolve a message text as if it was passed to a reporting macro, e.g.
 // defaultReport().

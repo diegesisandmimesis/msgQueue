@@ -9,6 +9,10 @@
 
 // Class for message queue filters.
 class MsgQueueFilter: object
+	// If true, filter will be automatically added to the main
+	// message queue daemon at preinit time.
+	autoAdd = nil
+
 	// Stub method to be overwritten by actual filters.
 	// The argument is the calling message queue.
 	filter(q?) {}
